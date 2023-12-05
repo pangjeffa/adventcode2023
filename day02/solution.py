@@ -67,3 +67,29 @@ with open('input2.txt') as f:
 print(idSum)
 
 # print(extractRGB('12 blue, 15 red, 2 green; 17 red, 8 green, 5 blue; 8 red, 17 blue; 9 green, 1 blue, 4 red')[0])
+
+
+import timeit
+f1 = '''with open('input.txt') as f:
+    idSum = 0
+    red = 12
+    green = 13
+    blue = 14
+    for line in f:
+        game,data = splitGameData(line)
+        if checkRGB(data,(red,green,blue)):
+            idSum += int(extractGame(game))'''
+
+n = 1000
+result = timeit.timeit(f1,globals=globals(), number = n)
+print(result/n)
+
+f2 = '''with open('input2.txt') as f:
+    idSum = 0
+    for line in f:
+        game,data = splitGameData(line)
+
+        idSum += findMinPower(data)'''
+n = 1000
+result = timeit.timeit(f2,globals=globals(), number = n)
+print(result/n)

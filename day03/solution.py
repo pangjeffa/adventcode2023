@@ -91,39 +91,44 @@ testinput = [(0, 3, '467'), (2, 4, ''), (5, 8, '114')]
 
 assert(getIntersections(testinput)==467)
 
-
-filename = 'input.txt'
-lengthFile = 0
-with open(filename, "rb") as f:
-    lengthFile = sum(1 for _ in f)
-with open(filename) as f:
-    nums = [[] for _ in range(lengthFile)]
-    
-    row = 0
-    while True:
-        line = f.readline()
-        if not line:
-            break
-        findNums(line,nums[row])
+def main():
+    filename = 'input.txt'
+    lengthFile = 0
+    with open(filename, "rb") as f:
+        lengthFile = sum(1 for _ in f)
+    with open(filename) as f:
+        nums = [[] for _ in range(lengthFile)]
         
-        for symbol in findSymbols(line):
-            bounds = getBounds(row,symbol.span()[0],len(nums)-1,len(line)-1)
-            insertItem(nums,bounds)
-        #increment counter
-        row += 1
-    total = 0
+        row = 0
+        while True:
+            line = f.readline()
+            if not line:
+                break
+            findNums(line,nums[row])
+            
+            for symbol in findSymbols(line):
+                bounds = getBounds(row,symbol.span()[0],len(nums)-1,len(line)-1)
+                insertItem(nums,bounds)
+            #increment counter
+            row += 1
+        total = 0
 
-    for idx,line in enumerate(nums):
-        l = line.copy()
-        part = getIntersections(line)
-        # print(idx,part, l)
-        total += part
-    print(total)
+        for idx,line in enumerate(nums):
+            l = line.copy()
+            part = getIntersections(line)
+            # print(idx,part, l)
+            total += part
+        return total
 
 
 
+if __name__ == "__main__":
+    print(main())
 
-
+    import timeit
+    n = 100
+    result = timeit.timeit('''main()''',globals=globals(), number = n)
+    print(result/n)
 
 
 ############

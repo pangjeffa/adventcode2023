@@ -65,24 +65,30 @@ def getAlphaNumber(s:str) -> tuple:
 
 
         
-
-with open('input.txt') as f:
+import timeit
+f1 = '''with open('input.txt') as f:
     output = 0
     lines = f.readlines()
     for line in lines:
         l,r = getNum(line)
         output += int(l+r)
-    print(output)
-        
+    '''
+n = 100
+result = timeit.timeit(f1,globals=globals(), number = n)
+print(result/n)
 
-with open('input2.txt') as f:
+
+f2 = '''with open('input2.txt') as f:
     output = 0
     lines = f.readlines()
     for line in lines:
         l,r = getAlphaNumber(line)
 
         output += int(l+r)
-    print(output)
+    # print(output)'''
+n = 100
+result = timeit.timeit(f2,globals=globals(), number = n)
+print(result/n)
 
 # import re
 
