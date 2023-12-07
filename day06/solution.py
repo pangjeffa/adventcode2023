@@ -1,12 +1,37 @@
 def findMidTime(time:int, distance:int, rate:int = 1 ):
-    mid = findMaxDistance(time)
+    MaxPt = findMaxDistance(time)
 
-    r = mid
+    l, rMid = 1, MaxPt
+    while l < rMid:
+        mid = (rMid - l)//2 + l
+        midDist = calcDistance(mid,time)
+        if midDist == distance:
+            l = mid #this is unlikely, but if we find the correct time, we can just offset by 1 and get the lower bound. in this case, we want to find lowerbound -1
+            break
+        elif midDist < distance:
+            l = mid + 1
+        else:
+            rMid = mid -1
+
+    lMid,r = MaxPt+1, time
+    while lMid < r:
+        mid = (r - lMid)//2 + lMid
+        midDist = calcDistance(mid,time)
+        if midDist == distance:
+            r = mid
+            break
+        elif midDist > distance:
+            lMid = mid+1
+        else:
+            r = mid - 1
+    while calcDistance(r,time) < distance and r <= time:
+        r-=1
     while calcDistance(r,time) > distance and r <= time:
         r+=1
-    l = mid
-    while calcDistance(l,time) > distance and l >= 0:
-        l -= 1
+    
+    # l = MaxPt
+    # while calcDistance(l,time) > distance and l >= 0:
+    #     l -= 1
     return l,r
 
 def findLengthTuple(input:tuple)-> int:
@@ -86,7 +111,7 @@ def main():
     print("Part 1:",part1())
     print("Average Runtime:",result/n)
 
-    n = 100
+    n = 1
     result = timeit.timeit(part2,globals=globals(), number = n)
     print("Part 2:",part2())
     print("Average Runtime:",result/n)
