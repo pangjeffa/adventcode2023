@@ -24,6 +24,8 @@ def findMidTime(time:int, distance:int, rate:int = 1 ):
             lMid = mid+1
         else:
             r = mid - 1
+
+    #because i'm too lazy to figure out how the edge cases shoudl be handled
     while calcDistance(r,time) < distance and r <= time:
         r-=1
     while calcDistance(r,time) > distance and r <= time:
