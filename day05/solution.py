@@ -65,7 +65,7 @@ def getSeedsIter(s:str):
     s = [int(n) for n in s.split(' ')]
     rngs = []
     for i in range(0,len(s),2):
-        rngs.append(range(s[i],s[i+1]))
+        rngs.append(range(s[i],s[i]+s[i+1]))
     return rngs
 
 def getLocation(seed:int,maps:list) ->int:
@@ -89,19 +89,62 @@ def part1():
     return location
 def part2():
     from tqdm import tqdm
+    from multiprocessing import Pool
+
     seeds, maps = parseInput("input.txt",False)
     location = float('inf')
     # print(seeds,maps)
-    for seed in tqdm(seeds):
+
+    def task(ceed):
+        for ceed in tqdm(seed):
+            newLocation = getLocation(ceed, maps)
+            if newLocation < location:
+                location = newLocation
+    # print(seeds)
+
+    for seed in seeds:
         for ceed in tqdm(seed):
             newLocation = getLocation(ceed, maps)
             if newLocation < location:
                 location = newLocation
     return location
 
+
+def task(maps,seed):
+    from tqdm import tqdm
+    location = float('inf')
+    for ceed in tqdm(seed):
+        newLocation = getLocation(ceed, maps)
+        if newLocation < location:
+            location = newLocation
+    return location
+
+def part2multi():
+    from tqdm import tqdm
+    
+    import multiprocessing
+    from multiprocessing import Pool
+    from itertools import repeat
+    from functools import partial
+    seeds, maps = parseInput("input.txt",False)
+
+
+    from tqdm import tqdm
+    with Pool(processes=14) as pool:
+        res = list(tqdm(pool.imap(partial(task,maps),seeds),total = len(seeds)))
+
+    print(res)
+    # for seed in seeds:
+    #     p = multiprocessing.Process(target=task ,args=(seed,maps))
+    #     processes.append(p)
+
+    # for p in processes:
+    #     p.start()
+
+    return min(res)
 def main():
     print("Part 1:",part1())
-    print("Part 2:",part2())
+    print("Part 2:",part2multi())
 
 
 def tests():
@@ -111,5 +154,6 @@ def tests():
 if __name__ == "__main__":
     tests()
     main()
+    
 
     
