@@ -20,16 +20,17 @@ def findMidTime(time:int, distance:int, rate:int = 1 ):
         if midDist == distance:
             r = mid
             break
-        elif midDist > distance:
-            lMid = mid+1
-        else:
+        elif midDist < distance:
             r = mid - 1
+        else:
+            lMid = mid+1
 
     #because i'm too lazy to figure out how the edge cases shoudl be handled
     while calcDistance(r,time) < distance and r <= time:
         r-=1
     while calcDistance(r,time) > distance and r <= time:
         r+=1
+
     
     # l = MaxPt
     # while calcDistance(l,time) > distance and l >= 0:
@@ -73,7 +74,7 @@ def readlineNumbers2(s:str)->list:
     sol = ''
     for num in list(re.findall('\d+',s)):
         sol += num
-    return int(sol)
+    return [int(sol)]
 
 def tests():
     time, distance = 7, 9
@@ -103,17 +104,19 @@ def part2():
         input = []
         for line in f:
             input.append(readlineNumbers2(line))
-        sol = findLengthTuple(findMidTime(input[0],input[1]))
+        sol = 1
+        for idx in range(len(input[0])):
+            sol *= findLengthTuple(findMidTime(input[0][idx],input[1][idx]))
     return sol
 def main():
-
+    
     import timeit
     n = 100
     result = timeit.timeit(part1,globals=globals(), number = n)
     print("Part 1:",part1())
     print("Average Runtime:",result/n)
 
-    n = 1
+    n = 100
     result = timeit.timeit(part2,globals=globals(), number = n)
     print("Part 2:",part2())
     print("Average Runtime:",result/n)
