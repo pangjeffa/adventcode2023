@@ -2,26 +2,36 @@ def parseLine(input: str)->tuple:
     hand,value = input.split(' ')
     return (hand,int(value))
 
-def countHand(handStr:str):
+def countHand(handStr:str,part2:bool = False):
     import heapq
     hand = [[] for _ in range(6)]
 
     countCards = {}
     
-    for letter in handStr:
-        card = getValue(letter)
-        countCards[card] = countCards.get(card, 0)+1
-
-    for card, count in countCards.items():
-        # heapq.heappush(hand[count],-card)
-        hand[count].append(-card)
-
+    if not part2:
+        for letter in handStr:
+            card = getValue(letter)
+            countCards[card] = countCards.get(card, 0)+1
     
+        for card, count in countCards.items():
+            # heapq.heappush(hand[count],-card)
+            hand[count].append(-card)
+    else:
+        j = 0
+        for letter in handStr:
+            if letter == "J":
+                j+=1
+            else:
+                card = getValue(letter)
+                countCards[card] = countCards.get(card, 0)+1
+        
+        
+
     return hand
     # return [sorted(n)if n else [] for n in hand ]
 
 def getValue(input:str)->int:
-    cardToInt = {l: v for v, l in enumerate('23456789TJQKA', 2)}
+    cardToInt = {l: v for v, l in enumerate('123456789TJQKA', 1)}
                 # {'2': 2,
                 #  '3': 3,
                 #  '4': 4,
@@ -37,24 +47,26 @@ def getValue(input:str)->int:
                 #  'A': 14}
     return cardToInt[input]
 
-def getHandValue(listHand: list,hand:str) -> int:
-    #uses there logic
-    handPower=0
-    
+def getHandPower(listHand:str)-> int:
     if (listHand[5]): #five of a kind
-        handPower=6
-    elif (listHand[4]): #four of kind
-        handPower=5
-    elif listHand[3] and listHand[2]: #full house
-        handPower=4
-    elif listHand[3]:#three kind
-        handPower=3
-    elif len(listHand[2]) == 2: #two pair
-        handPower=2
-    elif listHand[2]: #pair
-        handPower=1
-    #high card
-    return  (100000000*getValue(hand[0])+1000000*getValue(hand[1])+10000*getValue(hand[2])+100*getValue(hand[3])+1*getValue(hand[4]),handPower)
+        return 6
+    if (listHand[4]): #four of kind
+        return 5
+    if listHand[3] and listHand[2]: #full house
+        return 4
+    if listHand[3]:#three kind
+        return 3
+    if len(listHand[2]) == 2: #two pair
+        return 2
+    if listHand[2]: #pair
+        return 1
+    return 0
+def getHandValue(listHand: list,hand:str,part2:bool = False) -> tuple:
+    #uses there logic
+    if not part2:
+        return  (100000000*getValue(hand[0])+1000000*getValue(hand[1])+10000*getValue(hand[2])+100*getValue(hand[3])+1*getValue(hand[4]),getHandPower(listHand))
+    newHand = hand.replace('J','1')
+    return  (100000000*getValue(newHand[0])+1000000*getValue(newHand[1])+10000*getValue(newHand[2])+100*getValue(newHand[3])+1*getValue(newHand[4]),getHandPower(listHand))
 
 
 def getHandValueNormal(listHand: list) -> int:
@@ -112,13 +124,10 @@ def part1():
             sol += iter*bet
             iter +=1
     return sol
-# 246602932
-#246409899 p1 actual answer
-#247815719
+
 def main():
     print("Part 1:",part1())
 if __name__ == "__main__":
     tests()
     main()
-    # print(countHand("22233"))
-    # print(getHandValue(countHand("22233"),"22233"))
+
